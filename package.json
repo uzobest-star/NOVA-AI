@@ -1,0 +1,14 @@
+{
+  "name": "nova-ai-chatbot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "NOVA AI chatbot with a modern frontend and a secure local API backend.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {}
+}
