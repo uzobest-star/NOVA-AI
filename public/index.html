@@ -31,7 +31,18 @@
   <aside class="sidebar">
     <div class="brand"><div class="brand-mark">N</div><div><div class="brand-name">NOVA</div><div class="brand-sub">YOUR AI SPACE</div></div></div>
     <button class="new-chat" id="newChat"><span>＋</span> New conversation</button>
-    <div class="side-label">Recent conversations</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+  <div class="side-label" style="margin:28px 8px 12px">
+    Recent conversations
+  </div>
+  <button
+    id="clearHistory"
+    type="button"
+    style="margin:20px 4px 8px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--muted);font-size:10px"
+  >
+    Clear all
+  </button>
+</div>
     <div class="history-list" id="historyList"><div class="history-empty">Your saved chats will appear here.</div></div>
     <div class="side-label">Workspace</div>
     <div class="side-note"><div class="status-row"><span class="status-dot"></span><span>Local demo active</span></div><p>NOVA is running on your computer. This demo uses built-in responses and doesn't need an API key.</p></div>
@@ -201,6 +212,33 @@ input.addEventListener('input',()=>{input.style.height='auto';input.style.height
 input.addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();form.requestSubmit()}});
 suggestions.addEventListener('click',event=>{const button=event.target.closest('[data-prompt]');if(button)sendMessage(button.dataset.prompt)});
 document.getElementById('newChat').addEventListener('click',startNewChat);
+document.getElementById('clearHistory').addEventListener('click',()=>{
+  const chats=readHistory();
+
+  if(busy){
+    showToast('Please wait for NOVA to finish replying.');
+    return;
+  }
+
+  if(!chats.length){
+    showToast('No saved conversations to clear.');
+    return;
+  }
+
+  if(!confirm('Are you sure you want to delete all saved conversations? This cannot be undone.')){
+    return;
+  }
+
+  if('speechSynthesis' in window) window.speechSynthesis.cancel();
+  localStorage.removeItem(STORAGE_KEY);
+  messages=[];
+  currentChatId=null;
+  input.value='';
+  input.style.height='auto';
+  resetView();
+  renderHistory();
+  showToast('All conversations cleared successfully!');
+});
 input.addEventListener('focus',()=>{if(window.innerWidth<760)setTimeout(()=>input.scrollIntoView({block:'nearest',behavior:'smooth'}),150)});
 renderHistory();
 </script>
